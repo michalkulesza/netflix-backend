@@ -7,7 +7,7 @@ const appendMediaType = require("../helpers/appendMediaType");
 
 //Initial browse data
 router.get("/", async (req, res) => {
-	console.log("REQUEST");
+	console.log("REQUEST /");
 	try {
 		const trending = await axios
 			.get(`https://api.themoviedb.org/3/trending/films/week?api_key=${process.env.API_KEY}`)
