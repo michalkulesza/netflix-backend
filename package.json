@@ -1,0 +1,20 @@
+{
+	"devDependencies": {
+		"nodemon": "^2.0.4"
+	},
+	"name": "netflix-back",
+	"version": "1.0.0",
+	"main": "app.js",
+	"scripts": {
+		"dev": "nodemon ./app.js"
+	},
+	"repository": "https://github.com/michalkulesza/netflix-backend.git",
+	"author": "<kulesza.michal@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^0.20.0",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1"
+	}
+}
