@@ -9,16 +9,10 @@ router.post("/movie", async (req, res) => {
 	try {
 		const { id } = req.body;
 
-		const baseUrl = await axios
-			.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.images.base_url);
-
 		const details = await axios
 			.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}`)
-			.then(response => {
-				response.data.backdrop_path = `${baseUrl}w1280${response.data.backdrop_path}`;
-				return response.data;
-			});
+			.then(response => response.data);
+		await appendBaseUrl([details]);
 
 		const ageRestriction = await axios
 			.get(`https://api.themoviedb.org/3/movie/${id}/release_dates?api_key=${process.env.API_KEY}`)
@@ -46,16 +40,10 @@ router.post("/tv", async (req, res) => {
 	try {
 		const { id } = req.body;
 
-		const baseUrl = await axios
-			.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.images.base_url);
-
 		const details = await axios
 			.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}`)
-			.then(response => {
-				response.data.backdrop_path = `${baseUrl}w1280${response.data.backdrop_path}`;
-				return response.data;
-			});
+			.then(response => response.data);
+		await appendBaseUrl([details]);
 
 		const ageRestriction = await axios
 			.get(`https://api.themoviedb.org/3/tv/${id}/content_ratings?api_key=${process.env.API_KEY}`)
