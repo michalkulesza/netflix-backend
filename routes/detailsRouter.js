@@ -26,7 +26,7 @@ router.post("/movie", async (req, res) => {
 
 		const cast = await axios
 			.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.cast.slice(0, 5));
+			.then(response => response.data.cast);
 
 		res.send({ details: details, ageRestriction: ageRestriction, related: related, cast: cast });
 	} catch (err) {
@@ -57,7 +57,7 @@ router.post("/tv", async (req, res) => {
 
 		const cast = await axios
 			.get(`https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.cast.slice(0, 5));
+			.then(response => response.data.cast);
 
 		res.send({ details: details, ageRestriction: ageRestriction, related: related, cast: cast });
 	} catch (err) {
