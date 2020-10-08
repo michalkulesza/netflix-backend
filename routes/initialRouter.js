@@ -9,27 +9,42 @@ const appendMediaType = require("../helpers/appendMediaType");
 router.get("/browse", async (req, res) => {
 	console.log("REQUEST /");
 	try {
-		const trending = await axios
-			.get(`https://api.themoviedb.org/3/trending/films/week?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await decodeGenres(trending);
-		await appendBaseUrl(trending);
+		const movieGenres = axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
+		const tvGenres = axios.get(`https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.API_KEY}`);
+		const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
 
-		const top_rated = await axios
-			.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await decodeGenres(top_rated);
-		await appendBaseUrl(top_rated);
-		await appendMediaType(top_rated, "movie");
+		const popular = axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}`);
+		const top_rated = axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}`);
+		const trending = axios.get(`https://api.themoviedb.org/3/trending/films/week?api_key=${process.env.API_KEY}`);
 
-		const popular = await axios
-			.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await decodeGenres(popular);
-		await appendBaseUrl(popular);
-		await appendMediaType(popular, "movie");
+		axios
+			.all([movieGenres, tvGenres, baseUrl, popular, top_rated, trending])
+			.then(
+				axios.spread((...responses) => {
+					const movieGenres = responses[0];
+					const tvGenres = responses[1];
+					const genres = [...movieGenres.data.genres, ...tvGenres.data.genres];
+					const baseUrl = responses[2].data.images.base_url;
 
-		res.send([{ trending }, { top_rated }, { popular }, { top_rated }]);
+					const popular = appendMediaType(
+						appendBaseUrl(decodeGenres(responses[3].data.results, genres), baseUrl),
+						"movie"
+					);
+
+					const top_rated = appendMediaType(
+						appendBaseUrl(decodeGenres(responses[4].data.results, genres), baseUrl),
+						"movie"
+					);
+
+					const trending = appendMediaType(
+						appendBaseUrl(decodeGenres(responses[5].data.results, genres), baseUrl),
+						"movie"
+					);
+
+					res.send([{ popular }, { top_rated }, { trending }]);
+				})
+			)
+			.catch(err => console.log(err.message));
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
@@ -39,28 +54,42 @@ router.get("/browse", async (req, res) => {
 router.get("/series", async (req, res) => {
 	console.log("REQUEST /SERIES");
 	try {
-		const popular = await axios
-			.get(`https://api.themoviedb.org/3/tv/popular?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await decodeGenres(popular);
-		await appendBaseUrl(popular);
-		await appendMediaType(popular, "tv");
+		const movieGenres = axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
+		const tvGenres = axios.get(`https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.API_KEY}`);
+		const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
 
-		const top_rated = await axios
-			.get(`https://api.themoviedb.org/3/tv/top_rated?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await decodeGenres(top_rated);
-		await appendBaseUrl(top_rated);
-		await appendMediaType(top_rated, "tv");
+		const popular = await axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=${process.env.API_KEY}`);
+		const top_rated = await axios.get(`https://api.themoviedb.org/3/tv/top_rated?api_key=${process.env.API_KEY}`);
+		const on_the_air = await axios.get(`https://api.themoviedb.org/3/tv/on_the_air?api_key=${process.env.API_KEY}`);
 
-		const on_the_air = await axios
-			.get(`https://api.themoviedb.org/3/tv/on_the_air?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await decodeGenres(on_the_air);
-		await appendBaseUrl(on_the_air);
-		await appendMediaType(on_the_air, "tv");
+		axios
+			.all([movieGenres, tvGenres, baseUrl, popular, top_rated, on_the_air])
+			.then(
+				axios.spread((...responses) => {
+					const movieGenres = responses[0];
+					const tvGenres = responses[1];
+					const genres = [...movieGenres.data.genres, ...tvGenres.data.genres];
+					const baseUrl = responses[2].data.images.base_url;
 
-		res.send([{ popular }, { top_rated }, { on_the_air }]);
+					const popular = appendMediaType(
+						appendBaseUrl(decodeGenres(responses[3].data.results, genres), baseUrl),
+						"movie"
+					);
+
+					const top_rated = appendMediaType(
+						appendBaseUrl(decodeGenres(responses[4].data.results, genres), baseUrl),
+						"movie"
+					);
+
+					const on_the_air = appendMediaType(
+						appendBaseUrl(decodeGenres(responses[5].data.results, genres), baseUrl),
+						"movie"
+					);
+
+					res.send([{ popular }, { top_rated }, { on_the_air }]);
+				})
+			)
+			.catch(err => console.log(err.message));
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}

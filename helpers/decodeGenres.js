@@ -1,17 +1,9 @@
-const axios = require("axios");
+const decodeGenres = (arr, genres) => {
+	arr.forEach(
+		video => (video.genre_ids = video.genre_ids.map(id => genres.find(genre => genre.id === id)).map(res => res.name))
+	);
 
-const decodeGenres = async videosArr => {
-	try {
-		const movieGenres = await axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
-		const tvGenres = await axios.get(`https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.API_KEY}`);
-		const genres = [...movieGenres.data.genres, ...tvGenres.data.genres];
-		return videosArr.forEach(
-			video =>
-				(video.genre_ids = video.genre_ids.map(item => genres.find(genre => genre.id === item)).map(res => res.name))
-		);
-	} catch (error) {
-		console.error(`Error decoding genres: ${error.message}`);
-	}
+	return arr;
 };
 
 module.exports = decodeGenres;

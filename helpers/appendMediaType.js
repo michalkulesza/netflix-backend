@@ -1,11 +1,9 @@
-const appendMediaType = async (videosArr, type) => {
-	try {
-		return videosArr.forEach(video => {
-			Object.assign(video, { media_type: type });
-		});
-	} catch (error) {
-		console.error(`Error appending media type: ${error.message}`);
-	}
+const appendMediaType = (arr, type) => {
+	arr.forEach(video => {
+		Object.assign(video, { media_type: type });
+	});
+
+	return arr;
 };
 
 module.exports = appendMediaType;
