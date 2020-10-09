@@ -3,34 +3,43 @@ const router = express.Router();
 const axios = require("axios");
 const appendBaseUrl = require("../helpers/appendBaseUrl");
 
+const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
+
 //Details for movie
 router.post("/movie", async (req, res) => {
 	console.log("REQUEST /details/movie");
 	try {
 		const { id } = req.body;
+		const details = axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}`);
+		const ageRestriction = axios.get(
+			`https://api.themoviedb.org/3/movie/${id}/release_dates?api_key=${process.env.API_KEY}`
+		);
+		const related = axios.get(
+			`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.API_KEY}`
+		);
+		const cast = axios.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.API_KEY}`);
 
-		const details = await axios
-			.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}`)
-			.then(response => response.data);
-		await appendBaseUrl([details]);
+		axios
+			.all([baseUrl, details, ageRestriction, related, cast])
+			.then(
+				axios.spread((...responses) => {
+					const baseUrl = responses[0].data.images.base_url;
+					const details = appendBaseUrl([responses[1].data], baseUrl)[0];
+					const ageRestrictionData = responses[2].data.results.filter(obj => obj.iso_3166_1 === "GB")[0];
+					const ageRestriction = ageRestrictionData ? ageRestrictionData.release_dates[0].certification : "-";
+					const related = appendBaseUrl(responses[3].data.results, baseUrl);
+					const cast = responses[4].data.cast;
 
-		const ageRestriction = await axios
-			.get(`https://api.themoviedb.org/3/movie/${id}/release_dates?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results.filter(obj => obj.iso_3166_1 === "DE")[0].release_dates[0].certification)
-			.then(data => (data === "" ? "-" : data));
-
-		const related = await axios
-			.get(`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await appendBaseUrl(related);
-
-		const cast = await axios
-			.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.cast);
-
-		res.send({ details: details, ageRestriction: ageRestriction, related: related, cast: cast });
+					res.send({ details, ageRestriction, related, cast });
+				})
+			)
+			.catch(err => {
+				res.status(500).json({ error: err.message });
+				console.log(err.message);
+			});
 	} catch (err) {
 		res.status(500).json({ error: err.message });
+		console.log(err.message);
 	}
 });
 
@@ -39,29 +48,34 @@ router.post("/tv", async (req, res) => {
 	console.log("REQUEST /details/tv");
 	try {
 		const { id } = req.body;
+		const details = axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}`);
+		const ageRestriction = axios.get(
+			`https://api.themoviedb.org/3/tv/${id}/content_ratings?api_key=${process.env.API_KEY}`
+		);
+		const related = axios.get(`https://api.themoviedb.org/3/tv/${id}/similar?api_key=${process.env.API_KEY}`);
+		const cast = axios.get(`https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.API_KEY}`);
 
-		const details = await axios
-			.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}`)
-			.then(response => response.data);
-		await appendBaseUrl([details]);
+		axios
+			.all([baseUrl, details, ageRestriction, related, cast])
+			.then(
+				axios.spread((...responses) => {
+					const baseUrl = responses[0].data.images.base_url;
+					const details = appendBaseUrl([responses[1].data], baseUrl)[0];
+					const ageRestrictionData = responses[2].data.results.filter(obj => obj.iso_3166_1 === "GB")[0];
+					const ageRestriction = ageRestrictionData ? ageRestrictionData.rating : "-";
+					const related = appendBaseUrl(responses[3].data.results, baseUrl);
+					const cast = responses[4].data.cast;
 
-		const ageRestriction = await axios
-			.get(`https://api.themoviedb.org/3/tv/${id}/content_ratings?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results.filter(obj => obj.iso_3166_1 === "DE")[0].rating)
-			.then(data => (data === "" ? "-" : data));
-
-		const related = await axios
-			.get(`https://api.themoviedb.org/3/tv/${id}/similar?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.results);
-		await appendBaseUrl(related);
-
-		const cast = await axios
-			.get(`https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.API_KEY}`)
-			.then(response => response.data.cast);
-
-		res.send({ details: details, ageRestriction: ageRestriction, related: related, cast: cast });
+					res.send({ details, ageRestriction, related, cast });
+				})
+			)
+			.catch(err => {
+				res.status(500).json({ error: err.message });
+				console.log(err.message);
+			});
 	} catch (err) {
 		res.status(500).json({ error: err.message });
+		console.log(err.message);
 	}
 });
 

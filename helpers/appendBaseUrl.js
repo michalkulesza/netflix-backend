@@ -17,7 +17,6 @@ const appendBaseUrl = (arr, baseUrl) => {
 
 		return null;
 	});
-
 	return arr;
 };
 
