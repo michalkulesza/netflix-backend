@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const { v4: uuid } = require("uuid");
 const decodeGenres = require("../helpers/decodeGenres");
 const appendBaseUrl = require("../helpers/appendBaseUrl");
 const appendMediaType = require("../helpers/appendMediaType");
@@ -39,7 +40,11 @@ router.get("/browse", async (req, res) => {
 						"movie"
 					);
 
-					res.send([{ popular }, { top_rated }, { trending }]);
+					res.send([
+						{ popular, id: uuid() },
+						{ top_rated, id: uuid() },
+						{ trending, id: uuid() },
+					]);
 				})
 			)
 			.catch(err => console.log(err.message));
@@ -83,7 +88,12 @@ router.get("/series", async (req, res) => {
 						"tv"
 					);
 
-					res.send([{ popular }, { top_rated }, { on_the_air }, { discover }]);
+					res.send([
+						{ on_the_air, id: uuid() },
+						{ popular, id: uuid() },
+						{ top_rated, id: uuid() },
+						{ discover, id: uuid() },
+					]);
 				})
 			)
 			.catch(err => {
@@ -130,7 +140,12 @@ router.get("/films", async (req, res) => {
 						appendBaseUrl(decodeGenres(responses[6].data.results, genres), baseUrl),
 						"movie"
 					);
-					res.send([{ popular }, { top_rated }, { trending }, { discover }]);
+					res.send([
+						{ popular, id: uuid() },
+						{ top_rated, id: uuid() },
+						{ trending, id: uuid() },
+						{ discover, id: uuid() },
+					]);
 				})
 			)
 			.catch(err => {
