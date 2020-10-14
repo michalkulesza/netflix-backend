@@ -8,6 +8,7 @@ const detailsRouter = require("./routes/detailsRouter");
 const episodesRouter = require("./routes/episodesRouter");
 const videoRouter = require("./routes/videoRouter");
 const genresRouter = require("./routes/genresRouter");
+const genreRouter = require("./routes/genreRouter");
 
 app.use(cors());
 
@@ -18,5 +19,6 @@ app.use("/details", detailsRouter);
 app.use("/episodes", episodesRouter);
 app.use("/video", videoRouter);
 app.use("/genres", genresRouter);
+app.use("/genre", genreRouter);
 
 app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
