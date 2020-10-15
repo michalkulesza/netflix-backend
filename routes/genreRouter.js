@@ -7,11 +7,11 @@ const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${
 
 //Request series data by genre
 router.post("/series", async (req, res) => {
-	const { genreID } = req.body;
+	const { genreID, page } = req.body;
 	console.log("REQUEST /genre/series", genreID);
 	try {
 		const genres = axios.get(
-			`https://api.themoviedb.org/3/discover/tv?api_key=${process.env.API_KEY}&with_genres=${genreID}`
+			`https://api.themoviedb.org/3/discover/tv?api_key=${process.env.API_KEY}&with_genres=${genreID}&page=${page}`
 		);
 
 		axios
