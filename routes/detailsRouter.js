@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const appendBaseUrl = require("../helpers/appendBaseUrl");
+const appendMediaType = require("../helpers/appendMediaType");
 
 const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
 
@@ -24,7 +25,7 @@ router.post("/movie", async (req, res) => {
 			.then(
 				axios.spread((...responses) => {
 					const baseUrl = responses[0].data.images.base_url;
-					const details = appendBaseUrl([responses[1].data], baseUrl)[0];
+					const details = appendMediaType([appendBaseUrl([responses[1].data], baseUrl)[0]], "movie");
 					const ageRestrictionData = responses[2].data.results.filter(obj => obj.iso_3166_1 === "GB")[0];
 					const ageRestriction = ageRestrictionData ? ageRestrictionData.release_dates[0].certification : "-";
 					const related = appendBaseUrl(responses[3].data.results, baseUrl);
@@ -60,7 +61,7 @@ router.post("/tv", async (req, res) => {
 			.then(
 				axios.spread((...responses) => {
 					const baseUrl = responses[0].data.images.base_url;
-					const details = appendBaseUrl([responses[1].data], baseUrl)[0];
+					const details = appendMediaType([appendBaseUrl([responses[1].data], baseUrl)[0]], "tv");
 					const ageRestrictionData = responses[2].data.results.filter(obj => obj.iso_3166_1 === "GB")[0];
 					const ageRestriction = ageRestrictionData ? ageRestrictionData.rating : "-";
 					const related = appendBaseUrl(responses[3].data.results, baseUrl);
