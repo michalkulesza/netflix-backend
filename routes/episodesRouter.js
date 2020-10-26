@@ -32,4 +32,39 @@ router.post("/", async (req, res) => {
 	}
 });
 
+//Request all episodes and seasons
+router.post("/all", async (req, res) => {
+	const { id } = req.body;
+	console.log("REQUEST /episodes/all");
+	try {
+		const tvDetails = axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}`);
+
+		axios
+			.all([tvDetails])
+			.then(
+				axios.spread(async (...responses) => {
+					const seasonsNum = responses[0].data.number_of_seasons;
+					let data = [];
+
+					for (let i = 1; i <= seasonsNum; i++) {
+						const season = await axios
+							.get(`https://api.themoviedb.org/3/tv/${id}/season/${i}?api_key=${process.env.API_KEY}`)
+							.then(res => res.data);
+
+						data = [...data, season];
+					}
+
+					res.send(data);
+				})
+			)
+			.catch(err => {
+				res.status(500).json({ error: err.message });
+				console.log(err.message);
+			});
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+		console.log(err.message);
+	}
+});
+
 module.exports = router;
