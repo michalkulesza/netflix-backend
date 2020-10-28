@@ -49,11 +49,19 @@ router.post("/like", async (req, res) => {
 	}
 });
 
-router.delete("/like", async (req, res) => {
-	const { likeID, userID } = req.body;
+router.post("/dislike", async (req, res) => {
+	console.log("POST REQUEST /data/dislike");
+	const { videoID, userID } = req.body;
 
-	console.log("DELETE REQUEST /data/like");
 	try {
+		db.collection("users")
+			.doc(userID)
+			.get()
+			.then(doc => {
+				doc.ref.set({ disliked: admin.firestore.FieldValue.arrayUnion(videoID) });
+				doc.ref.set({ liked: admin.firestore.FieldValue.arrayRemove(videoID) });
+			});
+		return res.send(200);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 		console.error(err.message);
