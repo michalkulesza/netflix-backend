@@ -67,7 +67,7 @@ router.get("/tv", async (req, res) => {
 					const related = appendBaseUrl(responses[3].data.results, baseUrl);
 					const cast = responses[4].data.cast;
 
-					res.send({ details, ageRestriction, related, cast });
+					res.send({ details: details[0], ageRestriction, related, cast });
 				})
 			)
 			.catch(err => {
