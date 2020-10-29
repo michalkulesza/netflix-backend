@@ -6,8 +6,8 @@ const appendBaseUrl = require("../helpers/appendBaseUrl");
 const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
 
 //Request episodes by season
-router.post("/", async (req, res) => {
-	const { id, season } = req.body;
+router.get("/", async (req, res) => {
+	const { id, season } = req.query;
 	console.log("REQUEST /episodes");
 	try {
 		const episodes = axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${process.env.API_KEY}`);
@@ -33,8 +33,8 @@ router.post("/", async (req, res) => {
 });
 
 //Request all episodes and seasons
-router.post("/all", async (req, res) => {
-	const { id } = req.body;
+router.get("/all", async (req, res) => {
+	const { id } = req.query;
 	console.log("REQUEST /episodes/all");
 	try {
 		const tvDetails = axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}`);

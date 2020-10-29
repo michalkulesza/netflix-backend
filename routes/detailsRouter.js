@@ -7,10 +7,10 @@ const appendMediaType = require("../helpers/appendMediaType");
 const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
 
 //Details for movie
-router.post("/movie", async (req, res) => {
+router.get("/movie", async (req, res) => {
 	console.log("REQUEST /details/movie");
 	try {
-		const { id } = req.body;
+		const { id } = req.query;
 		const details = axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}`);
 		const ageRestriction = axios.get(
 			`https://api.themoviedb.org/3/movie/${id}/release_dates?api_key=${process.env.API_KEY}`
@@ -45,10 +45,10 @@ router.post("/movie", async (req, res) => {
 });
 
 //Details for tv
-router.post("/tv", async (req, res) => {
+router.get("/tv", async (req, res) => {
 	console.log("REQUEST /details/tv");
 	try {
-		const { id } = req.body;
+		const { id } = req.query;
 		const details = axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}`);
 		const ageRestriction = axios.get(
 			`https://api.themoviedb.org/3/tv/${id}/content_ratings?api_key=${process.env.API_KEY}`

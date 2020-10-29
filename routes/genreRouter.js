@@ -8,8 +8,8 @@ const appendMediaType = require("../helpers/appendMediaType");
 const baseUrl = axios.get(`https://api.themoviedb.org/3/configuration?api_key=${process.env.API_KEY}`);
 
 //Request series data by genre
-router.post("/series", async (req, res) => {
-	const { genreID, page } = req.body;
+router.get("/series", async (req, res) => {
+	const { genreID, page } = req.query;
 	console.log("REQUEST /genre/series", genreID);
 	try {
 		const genresData = axios.get(
@@ -40,8 +40,8 @@ router.post("/series", async (req, res) => {
 });
 
 //Request films data by genre
-router.post("/films", async (req, res) => {
-	const { genreID } = req.body;
+router.get("/films", async (req, res) => {
+	const { genreID } = req.query;
 	console.log("REQUEST /genre/films", genreID);
 	try {
 		const genresData = axios.get(
