@@ -42,11 +42,15 @@ router.post("/like", async (req, res) => {
 				if (doc.exists) {
 					doc.ref.set({ liked: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
 					doc.ref.set({ disliked: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
+					res.sendStatus(200);
 				} else {
 					res.status(500).json({ error: "No data found." });
 				}
+			})
+			.catch(err => {
+				res.status(500).json({ error: err.message });
+				console.error(err.message);
 			});
-		return res.sendStatus(200);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 		console.error(err.message);
@@ -65,11 +69,15 @@ router.post("/dislike", async (req, res) => {
 				if (doc.exists) {
 					doc.ref.set({ disliked: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
 					doc.ref.set({ liked: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
+					res.sendStatus(200);
 				} else {
 					res.status(500).json({ error: "No data found." });
 				}
+			})
+			.catch(err => {
+				res.status(500).json({ error: err.message });
+				console.error(err.message);
 			});
-		return res.sendStatus(200);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 		console.error(err.message);
@@ -92,11 +100,15 @@ router.post("/list", async (req, res) => {
 					} else {
 						doc.ref.set({ list: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
 					}
+					res.sendStatus(200);
 				} else {
 					res.status(500).json({ error: "No data found." });
 				}
+			})
+			.catch(err => {
+				res.status(500).json({ error: err.message });
+				console.error(err.message);
 			});
-		return res.sendStatus(200);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 		console.error(err.message);
