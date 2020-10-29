@@ -14,17 +14,17 @@ router.get("/user", async (req, res) => {
 			.get()
 			.then(doc => {
 				if (doc.exists) {
-					res.status(200).send(doc.data());
+					res.sendStatus(200).send(doc.data());
 				} else {
-					res.status(500).json({ error: "No data found." });
+					res.sendStatus(500).json({ error: "No data found." });
 				}
 			})
 			.catch(err => {
-				res.status(500).json({ error: err.message });
+				res.sendStatus(500).json({ error: err.message });
 				console.error(err.message);
 			});
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.sendStatus(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
@@ -39,12 +39,16 @@ router.post("/like", async (req, res) => {
 			.doc(userID)
 			.get()
 			.then(doc => {
-				doc.ref.set({ liked: admin.firestore.FieldValue.arrayUnion(videoID) });
-				doc.ref.set({ disliked: admin.firestore.FieldValue.arrayRemove(videoID) });
+				if (doc.exists) {
+					doc.ref.set({ liked: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
+					doc.ref.set({ disliked: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
+				} else {
+					res.sendStatus(500).json({ error: "No data found." });
+				}
 			});
 		return res.send(200);
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.sendStatus(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
@@ -58,14 +62,44 @@ router.post("/dislike", async (req, res) => {
 			.doc(userID)
 			.get()
 			.then(doc => {
-				doc.ref.set({ disliked: admin.firestore.FieldValue.arrayUnion(videoID) });
-				doc.ref.set({ liked: admin.firestore.FieldValue.arrayRemove(videoID) });
+				if (doc.exists) {
+					doc.ref.set({ disliked: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
+					doc.ref.set({ liked: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
+				} else {
+					res.sendStatus(500).json({ error: "No data found." });
+				}
 			});
 		return res.send(200);
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.sendStatus(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
 
+router.post("/list", async (req, res) => {
+	console.log("POST REQUEST /data/list");
+	const { videoID, userID } = req.body;
+
+	try {
+		db.collection("users")
+			.doc(userID)
+			.get()
+			.then(doc => {
+				if (doc.exists) {
+					const list = doc.data().list;
+					if (!list.includes(videoID)) {
+						doc.ref.set({ list: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
+					} else {
+						doc.ref.set({ list: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
+					}
+				} else {
+					res.sendStatus(500).json({ error: "No data found." });
+				}
+			});
+		return res.sendStatus(200);
+	} catch (err) {
+		res.sendStatus(500).json({ error: err.message });
+		console.error(err.message);
+	}
+});
 module.exports = router;
