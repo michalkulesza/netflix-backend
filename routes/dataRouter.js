@@ -14,17 +14,17 @@ router.get("/user", async (req, res) => {
 			.get()
 			.then(doc => {
 				if (doc.exists) {
-					res.sendStatus(200).send(doc.data());
+					res.status(200).send(doc.data());
 				} else {
-					res.sendStatus(500).json({ error: "No data found." });
+					res.status(500).json({ error: "No data found." });
 				}
 			})
 			.catch(err => {
-				res.sendStatus(500).json({ error: err.message });
+				res.status(500).json({ error: err.message });
 				console.error(err.message);
 			});
 	} catch (err) {
-		res.sendStatus(500).json({ error: err.message });
+		res.status(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
@@ -43,12 +43,12 @@ router.post("/like", async (req, res) => {
 					doc.ref.set({ liked: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
 					doc.ref.set({ disliked: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
 				} else {
-					res.sendStatus(500).json({ error: "No data found." });
+					res.status(500).json({ error: "No data found." });
 				}
 			});
-		return res.send(200);
+		return res.sendStatus(200);
 	} catch (err) {
-		res.sendStatus(500).json({ error: err.message });
+		res.status(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
@@ -66,12 +66,12 @@ router.post("/dislike", async (req, res) => {
 					doc.ref.set({ disliked: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
 					doc.ref.set({ liked: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
 				} else {
-					res.sendStatus(500).json({ error: "No data found." });
+					res.status(500).json({ error: "No data found." });
 				}
 			});
-		return res.send(200);
+		return res.sendStatus(200);
 	} catch (err) {
-		res.sendStatus(500).json({ error: err.message });
+		res.status(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
@@ -93,12 +93,12 @@ router.post("/list", async (req, res) => {
 						doc.ref.set({ list: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
 					}
 				} else {
-					res.sendStatus(500).json({ error: "No data found." });
+					res.status(500).json({ error: "No data found." });
 				}
 			});
 		return res.sendStatus(200);
 	} catch (err) {
-		res.sendStatus(500).json({ error: err.message });
+		res.status(500).json({ error: err.message });
 		console.error(err.message);
 	}
 });
