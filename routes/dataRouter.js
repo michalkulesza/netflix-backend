@@ -86,7 +86,7 @@ router.post("/dislike", async (req, res) => {
 
 router.post("/list", async (req, res) => {
 	console.log("POST REQUEST /data/list");
-	const { videoID, userID } = req.body;
+	const { userID, data } = req.body;
 
 	try {
 		db.collection("users")
@@ -95,10 +95,10 @@ router.post("/list", async (req, res) => {
 			.then(doc => {
 				if (doc.exists) {
 					const list = doc.data().list;
-					if (!list.includes(videoID)) {
-						doc.ref.set({ list: admin.firestore.FieldValue.arrayUnion(videoID) }, { merge: true });
+					if (list.find(obj => obj.id === data.id) === undefined) {
+						doc.ref.set({ list: admin.firestore.FieldValue.arrayUnion(data) }, { merge: true });
 					} else {
-						doc.ref.set({ list: admin.firestore.FieldValue.arrayRemove(videoID) }, { merge: true });
+						doc.ref.set({ list: admin.firestore.FieldValue.arrayRemove(data) }, { merge: true });
 					}
 					res.sendStatus(200);
 				} else {
