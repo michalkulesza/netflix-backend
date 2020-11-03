@@ -25,7 +25,7 @@ router.get("/movie", async (req, res) => {
 			.then(
 				axios.spread((...responses) => {
 					const baseUrl = responses[0].data.images.base_url;
-					const details = appendMediaType([appendBaseUrl([responses[1].data], baseUrl)[0]], "movie");
+					const details = appendMediaType([appendBaseUrl([responses[1].data], baseUrl)[0]]);
 					const ageRestrictionData = responses[2].data.results.filter(obj => obj.iso_3166_1 === "GB")[0];
 					const ageRestriction = ageRestrictionData ? ageRestrictionData.release_dates[0].certification : "-";
 					const related = appendBaseUrl(responses[3].data.results, baseUrl);
@@ -61,7 +61,7 @@ router.get("/tv", async (req, res) => {
 			.then(
 				axios.spread((...responses) => {
 					const baseUrl = responses[0].data.images.base_url;
-					const details = appendMediaType([appendBaseUrl([responses[1].data], baseUrl)[0]], "tv");
+					const details = appendMediaType([appendBaseUrl([responses[1].data], baseUrl)[0]]);
 					const ageRestrictionData = responses[2].data.results.filter(obj => obj.iso_3166_1 === "GB")[0];
 					const ageRestriction = ageRestrictionData ? ageRestrictionData.rating : "-";
 					const related = appendBaseUrl(responses[3].data.results, baseUrl);

@@ -56,7 +56,7 @@ router.get("/films", async (req, res) => {
 					const url = responses[0].data.images.base_url;
 					const genresData = responses[1];
 					const genresMap = responses[2].data.genres;
-					const data = appendMediaType(decodeGenres(appendBaseUrl(responses[1].data.results, url), genresMap), "movie");
+					const data = appendMediaType(decodeGenres(appendBaseUrl(responses[1].data.results, url), genresMap));
 
 					res.send({ data: data, page: genresData.data.page, total_pages: genresData.data.total_pages });
 				})

@@ -1,6 +1,6 @@
-const appendMediaType = (arr, type) => {
+const appendMediaType = arr => {
 	arr.forEach(video => {
-		Object.assign(video, { media_type: type });
+		Object.assign(video, { media_type: video.name ? "tv" : "movie" });
 	});
 	return arr;
 };
