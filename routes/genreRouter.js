@@ -41,11 +41,11 @@ router.get("/series", async (req, res) => {
 
 //Request films data by genre
 router.get("/films", async (req, res) => {
-	const { genreID } = req.query;
+	const { genreID, page } = req.query;
 	console.log("REQUEST /genre/films", genreID);
 	try {
 		const genresData = axios.get(
-			`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.API_KEY}&with_genres=${genreID}`
+			`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.API_KEY}&with_genres=${genreID}&page=${page}`
 		);
 		const genresMap = axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
 
