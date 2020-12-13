@@ -4,8 +4,16 @@
 </h4>
 
 <br>
+<<<<<<< HEAD
 <center></center>
 <center><img  src="https://forthebadge.com/images/badges/uses-badges.svg"  alt="For the badge"></center>
+=======
+
+<p  align="center">
+
+<img  src="https://forthebadge.com/images/badges/uses-badges.svg"  alt="For the badge"> </p>
+
+> > > > > > > 2a755213f00e87bac4e8e82c1c79f96edd5723bd
 
 ---
 
@@ -16,8 +24,14 @@
 </p>
 
 <p  align="center">
+<<<<<<< HEAD
 <br>
 <center><a  href="https://xcxz-netflix.netlify.app/">SEE LIVE VERSION</center>
+=======
+
+<a  href="https://xcxz-netflix.netlify.app/">SEE LIVE VERSION
+
+> > > > > > > 2a755213f00e87bac4e8e82c1c79f96edd5723bd
 
 </a>
 
